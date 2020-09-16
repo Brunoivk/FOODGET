@@ -43,15 +43,13 @@ export default {
             console.log(res);
             this.rndRecepti.push(`${res.config.baseURL}/recept/${recept._id}/slika,${recept._id}`)
         })
-        // this.rndRecepti = res.data.randomRecepti
+       
         console.log(this.rndRecepti);
       } catch (error) {
           console.log(error);
         this.error = error.data.error
       }
-    // let res = await Recept.ReceptSlika(this.info._id)
-    // if(res.data.size !== 0) this.pic = true
-    // this.url = `${res.config.baseURL}/recept/${this.info._id}/slika`
+   
   },
 }
 </script>
