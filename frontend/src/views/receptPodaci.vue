@@ -167,8 +167,7 @@ export default {
         this.url= `${podacioSlici.config.baseURL}${podacioSlici.config.url}`
 
         
-        // if(slika.data.size !== 0) this.pic = true
-        // this.url = `${slika.config.baseURL}/recept/${this.$route.params.id}/slika`
+   
 
 
         this.podaci.sastojci = res.data.sastojci.map((sastojak) =>{
