@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const ReceptKomentar = require('./receptKomentar');
 
-// prvo se stvara shema te "tablice", u njoj imas sto se sve unosi
+
 const ReceptShema = new mongoose.Schema({
     naziv:{
         type: String,
@@ -39,18 +39,18 @@ const ReceptShema = new mongoose.Schema({
           
     }
 }, {
-    //ovo omogucava da vidis kad je sta objavljeno i updejtano
+    
     timestamps: true
 })
 
-//posto svaki recept ima komentare moras prije brisanja pojedinog recepta obrisati sve komentare vezane za njega da ti ne ostaju u bazi
+//posto svaki recept ima komentare prije brisanja pojedinog recepta obriše sve komentare vezane za recept
 ReceptShema.pre('remove', async function(next){
     const recept = this
     await ReceptKomentar.deleteMany({recept: recept._id})
     next()
 })
 
-//na kraju od sheme radis "tablicu" Recepti s kojom onda radiš u rutama
+//tablica recepti s kojima radimo u rutama
 const Recept = mongoose.model('Recept', ReceptShema)
 
 
