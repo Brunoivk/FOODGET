@@ -8,9 +8,7 @@ const auth = require('../middleware/auth')
 //posto su rute podjeljene u vise fileova, u svakome treba instancirati novu
 var ForumObjavaRuta = new express.Router()
 
-//ruta koja sprema u bazu, "/api" je jer ako u produkciji budes imao i Vue koji ima "/recept" da ne baca error
-//npr u Vue "/recept" otvara html recept, a na backu "/recept" geta sve recepte. Nece znati sto treba, zato cijeli backend ima "prefix" api
-//upload.single() je middleware koji ucitava sliku (multer)
+//ruta koja sprema u bazu
 ForumObjavaRuta.post('/api/forum/objava', auth, async (req, res) =>{
     
     var objava = new ForumObjava({
@@ -19,22 +17,21 @@ ForumObjavaRuta.post('/api/forum/objava', auth, async (req, res) =>{
         email: req.user.email
     })
     try {
-        //pokusava spremit, ako uspije posalje sto je spremio
+        
         await objava.save()
         res.status(200).send(objava)
     } catch (error) {
         console.log(error);
-        //a ako postoji error vrati ti taj error
+        
         res.status(500).send({error: error.message})
     }
 })
 
 //dohvaca sve recepte
-//match sluzi za pretragu jer mongoose pretraga treba objekt koji se zove match zato je i ovdje match da se samo dolje prosljedi
+//match sluzi za pretragu 
 ForumObjavaRuta.get('/api/forum', async (req, res) =>{
     const match = {}
-    //ako si prosljedio termin za pretragu po nazivu radi malo regexa, sluzi tako da ako imas recepte sa rijec "cevapi" u nazivu, a ti si unio "ceva" vraca sve koje sadrze "ceva"
-    //u match naziv treba odgovarati onome sto je uneseno
+    
     console.log("sadrzaj",req.query.sadrzaj);
     if(req.query.sadrzaj != null && req.query.sadrzaj != 'undefined' && req.query.sadrzaj){
         let termin = new RegExp(`^.*${req.query.sadrzaj}.*$`, "img")
@@ -64,7 +61,7 @@ ForumObjavaRuta.get('/api/me/objave', auth, async (req, res) =>{
     }
 })
 
-//dohvati jedan recept po id-ju koji mu prosljedis
+//dohvati jedan recept
 ForumObjavaRuta.get('/api/forum/objava/:id', async (req, res) =>{
     const _id = req.params.id;
     try {
@@ -92,10 +89,9 @@ ForumObjavaRuta.get('/api/forum/objava/:id/komentari', async (req, res) =>{
     }
 })
 
-//updatejt jednog recepta
+//update jednog recepta
 ForumObjavaRuta.patch('/api/forum/objava/:id', auth, async (req, res) =>{
-    //ukratko gleda dali si u bodiju prosljedio dozvoljene varijable
-    //isto lakse uzivo objasnit
+    
     const updates = Object.keys(req.body)
 
     const dozvoljenePromjene = ["sadrzaj"];
@@ -106,7 +102,7 @@ ForumObjavaRuta.patch('/api/forum/objava/:id', auth, async (req, res) =>{
         return res.status(400).send()
     }
     try {
-        //pokusava pronaci taj recept, updejtat mu sve varijable i spremiti
+        
         const objava = await ForumObjava.findOne({_id:req.params.id, korisnik: req.user._id})
         updates.forEach((promjena) => objava[promjena] = req.body[promjena])
         
