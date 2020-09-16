@@ -18,10 +18,7 @@ const port = process.env.PORT || 3000;
 app.use(cors())
 app.use(express.json())
 
-// if(process.env.NODE_ENV === 'production'){
-//     // Static folder
-    app.use(express.static(__dirname + '/../public/'));
-// }
+
 
 //koristenje gore importanih ruta
 app.use(ReceptRuta)
