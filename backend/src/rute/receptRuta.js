@@ -5,9 +5,7 @@ const multer = require('multer')
 const auth = require('../middleware/auth')
 
 //multer sluzi za upload slika
-//limits limitira da max velicina slike bude 1 mb
-//fileFilter provjerava da li datoteka koju uploadas imas trazeni nastavak, jpg, jpeg, png, mozes dodati jos
-//cb je callback funkcija, ako nesto ne valja baca error, a ako je sve u redu za error stavlja undefined, i stavlja true da je dobro
+
 const upload = multer({
     limits: {
         fileSize: 1000000
@@ -25,9 +23,7 @@ const upload = multer({
 //posto su rute podjeljene u vise fileova, u svakome treba instancirati novu
 var ReceptRuta = new express.Router()
 
-//ruta koja sprema u bazu, "/api" je jer ako u produkciji budes imao i Vue koji ima "/recept" da ne baca error
-//npr u Vue "/recept" otvara html recept, a na backu "/recept" geta sve recepte. Nece znati sto treba, zato cijeli backend ima "prefix" api
-//upload.single() je middleware koji ucitava sliku (multer)
+//ruta koja sprema u bazu
 ReceptRuta.post('/api/recept', auth, upload.single('slika'), async (req, res) =>{
     //stvara novi recept sa varijablama sve iz bodija (...req.body) i sliku iz prijasnjeg if-a
     let sastojci = req.body.sastojci.split(',').map((sastojak) =>{
@@ -46,18 +42,17 @@ ReceptRuta.post('/api/recept', auth, upload.single('slika'), async (req, res) =>
         res.status(200).send(recept)
     } catch (error) {
         console.log(error);
-        //a ako postoji error vrati ti taj error
         res.status(500).send({error: error.message})
     }
 })
 
 //dohvaca sve recepte
-//match sluzi za pretragu jer mongoose pretraga treba objekt koji se zove match zato je i ovdje match da se samo dolje prosljedi
+//match sluzi za pretragu 
 ReceptRuta.get('/api/recept', async (req, res) =>{
     const match = {}
     const project = {}
     const random = {}
-    //ako si prosljedio termin za pretragu po nazivu radi malo regexa, sluzi tako da ako imas recepte sa rijec "cevapi" u nazivu, a ti si unio "ceva" vraca sve koje sadrze "ceva"
+    
     //u match naziv treba odgovarati onome sto je uneseno
     if(req.query.pretraga != null && req.query.pretraga != 'undefined'){
         let termin = new RegExp(`^.*${req.query.pretraga}.*$`, "img")
@@ -98,7 +93,7 @@ ReceptRuta.get('/api/me/recepti', auth, async (req, res) =>{
         res.status(500).send(error)
     }
 })
-//sluzi za dohvacanje slike za pojedini recept, to cu ti lakse objasniti preko poziva
+//sluzi za dohvacanje slike za pojedini recept
 ReceptRuta.get('/api/recept/:id/slika', async (req, res) => {
     try {
         const recept = await Recept.findById(req.params.id)
@@ -113,7 +108,7 @@ ReceptRuta.get('/api/recept/:id/slika', async (req, res) => {
     }
 })
 
-//dohvati jedan recept po id-ju koji mu prosljedis
+//dohvati jedan recept po id
 ReceptRuta.get('/api/recept/:id', async (req, res) =>{
     const _id = req.params.id;
     try {
@@ -141,11 +136,10 @@ ReceptRuta.get('/api/recept/:id/komentari', async (req, res) =>{
     }
 })
 
-//updatejt jednog recepta
+//update jednog recepta
 ReceptRuta.patch('/api/recept/:id', auth, async (req, res) =>{
     console.log("patch", req.body);
-    //ukratko gleda dali si u bodiju prosljedio dozvoljene varijable
-    //isto lakse uzivo objasnit
+    
     const updates = Object.keys(req.body)
 
     const dozvoljenePromjene = ["naziv", "opis", "sastojci", "priprema", "vrijemePripreme"];
@@ -156,7 +150,7 @@ ReceptRuta.patch('/api/recept/:id', auth, async (req, res) =>{
         return res.status(400)
     }
     try {
-        //pokusava pronaci taj recept, updejtat mu sve varijable i spremiti
+        
         const recept = await Recept.findOne({_id:req.params.id, korisnik: req.user._id})
         updates.forEach((promjena) => recept[promjena] = req.body[promjena])
         
