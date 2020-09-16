@@ -7,7 +7,7 @@
     
     <div class="col-sm">
       <div class="w-80 p-3" style="background-color: #eee;">
-            <!-- <span class="slikicaprofila float-left"></span> -->
+            
             <h5>Objavio: {{info.email}}</h5> <br>
             <router-link :to="{ name: 'objavaPodaci', params: {id: info._id} }"> 
               <div class="border w-90 p-3 ">
