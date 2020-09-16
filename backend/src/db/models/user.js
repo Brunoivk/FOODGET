@@ -78,12 +78,7 @@ UserSchema.post('save', function (error, doc, next) {
     else next(error);
 });
 
-// UserSchema.pre('remove', async function(next){
-//     const user = this
-//     await Field.deleteMany({owner: user._id})
-//     await Activity.deleteMany({owner: user._id})
-//     next()
-// })
+
 
 const User = mongoose.model('User', UserSchema)
 
