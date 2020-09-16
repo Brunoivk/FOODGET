@@ -46,7 +46,7 @@ export default {
   },
   async created() {
     await this.getAllRecepti()
-    // await this.randomRecepti()
+    
   },
   methods: {
     async next(){
