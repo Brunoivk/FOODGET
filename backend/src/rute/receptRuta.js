@@ -25,7 +25,7 @@ var ReceptRuta = new express.Router()
 
 //ruta koja sprema u bazu
 ReceptRuta.post('/api/recept', auth, upload.single('slika'), async (req, res) =>{
-    //stvara novi recept sa varijablama sve iz bodija (...req.body) i sliku iz prijasnjeg if-a
+  
     let sastojci = req.body.sastojci.split(',').map((sastojak) =>{
         return {sastojak}
       })
